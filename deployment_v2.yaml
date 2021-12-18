@@ -1,0 +1,25 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-v2
+  labels:
+    app: shopping
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: shopping
+      version: v2.0
+  template:
+    metadata:
+      labels:
+        app: shopping
+        version: v2.0
+    spec:
+      containers:
+      - name: shopping
+        image: xylene1980/shopping:v2
+        ports:
+        - name: http
+          containerPort: 5000

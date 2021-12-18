@@ -1,0 +1,53 @@
+# Deploy version 1 of application
+kubectl apply -f deployment_v1.yaml
+
+# List pods
+kubectl get po
+
+# Apply the service
+kubectl apply -f service.yaml
+# List service
+kubectl get svc
+
+# Access the NodePort service
+minikube service shopping
+curl http://192.168.99.112:30489/
+while true; do curl http://192.168.99.112:30489;sleep 0.5s; done
+
+# Running service using loop
+while true; do curl http://192.168.99.112:30489;sleep 0.5s; done
+
+# Deploy version 2 of app
+kubectl apply -f deployment_v2.yaml
+
+# List pods
+kubectl get po
+# Traffic flowing to version 1 and version 2 together
+while true; do curl http://192.168.99.112:30489;sleep 1s; done
+
+# Reduce replicas of v1, since we see that version 2 of the app
+# does not have any issues
+kubectl scale deploy/shopping --replicas=2
+
+# List pods
+kubectl get po
+
+# Bumping up pods of version 2
+kubectl scale deploy/shopping-v2 --replicas=5
+
+# List pods
+kubectl get po
+# Looping the service
+while true; do curl http://192.168.99.112:30489;sleep 1s; done
+
+# Deleting version 1 , since version 2 is working fine
+kubectl delete deploy shopping
+
+# List pods
+kubectl get po
+
+# Checking if there is only version 2 running
+while true; do curl http://192.168.99.112:30489;sleep 1s; done
+
+# Clean up
+kubectl delete all -l app=shopping
